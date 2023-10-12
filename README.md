@@ -1,3 +1,3 @@
 # Cellular-automata
 
-Programming projects I made about cellular automata
+Programming project I made about cellular automata
