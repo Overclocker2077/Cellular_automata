@@ -19,14 +19,14 @@ class cells_game():
     
     def search_area(self, point=None):
         if point == None:
-            return [[[(cell.centerX-2%4)//4+1,(cell.centerY-2%4)//4], 
-            [(cell.centerX-2%4)//4-1,(cell.centerY-2%4)//4], 
-            [(cell.centerX-2%4)//4+1,(cell.centerY-2%4)//4+1], 
-            [(cell.centerX-2%4)//4+1,(cell.centerY-2%4)//4-1], 
-            [(cell.centerX-2%4)//4-1,(cell.centerY-2%4)//4-1], 
-            [(cell.centerX-2%4)//4-1,(cell.centerY-2%4)//4+1], 
-            [(cell.centerX-2%4)//4,(cell.centerY-2%4)//4-1], 
-            [(cell.centerX-2%4)//4,(cell.centerY-2%4)//4+1]] for cell in app.rects]   # Format [[square_coordinates]]
+            return [[[(cell.centerX-2)//4+1,(cell.centerY-2)//4], 
+            [(cell.centerX-2)//4-1,(cell.centerY-2)//4], 
+            [(cell.centerX-2)//4+1,(cell.centerY-2)//4+1], 
+            [(cell.centerX-2)//4+1,(cell.centerY-2)//4-1], 
+            [(cell.centerX-2)//4-1,(cell.centerY-2)//4-1], 
+            [(cell.centerX-2)//4-1,(cell.centerY-2)//4+1], 
+            [(cell.centerX-2)//4,(cell.centerY-2)//4-1], 
+            [(cell.centerX-2)//4,(cell.centerY-2)//4+1]] for cell in app.rects]   # Format [[square_coordinates]]
         else:
             return [[point[0]+1, 
             point[1]], 
