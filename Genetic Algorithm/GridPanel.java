@@ -15,9 +15,13 @@ import java.util.HashMap;
 
 public class GridPanel extends JPanel {
     //private boolean[][] grid;                           // grid false = dead; true = alive;
-    private Integer[][] seed;                           // initial generation of cells 
+    private Integer[][] init_tissue;                            // initial configuration of cells 
     private int sample_size = 10;
-    private Integer[][][] sample;                       // store all the seeds; which are to be mutated.  
+    private Integer[][][] tissue_sample;
+    private int tissue_size = 35;                     
+    private int tissue_offset = 30;
+    private int mutation_rate = 15;
+    private Integer[][][] sample;                       // store all the tissues; which are to be mutated.  
     private int[][] neighbors = {{-1,1}, {0,1}, {1,1},  // store relative location of neighbors
                                         {-1,0},        {1,0},
                                         {-1,-1}, {0,-1}, {1,-1}
@@ -37,26 +41,33 @@ public class GridPanel extends JPanel {
     
     public GridPanel() {
         //boolean[][] grid = new boolean[1000][1000];  // 1000 by 1000 grid false = dead; true = alive;
-        // glider gun
-        seed =  new Integer[][] {{1,5},{2,5},{1,6},{2,6},
+        
+        // Glider Gun
+        init_tissue =  new Integer[][] {{1,5},{2,5},{1,6},{2,6},
         {11,5}, {11,6}, {11,7}, {12,4}, {12,8},{13,3},{13,9},{14,3},{14,9},
         {15,6}, {16,4}, {16,8}, {17,5}, {17,6}, {17,7}, {18,6},
         {21,3}, {21,4}, {21,5}, {22,3}, {22,4}, {22,5}, {23,2}, {23,6}, {25,1}, {25,2},
         {25,6}, {25,7}, {35,3}, {35,4}, {36,3}, {36,4}};  
-        
-        // seed = new Integer[][] {
+
+        // Glider
+        // init_tissue = new Integer[][] {
         //     {40,40}, {40,42},{41,41},{41,42},{42,41} 
         // };
-
+        
+        //init_tissue = random_tissue(tissue_size, tissue_offset);
+        
         aliveSet = new HashSet<Cell>();
         setFocusable(true);
         
         // initialize
-        for (Integer[] pos: seed) {
-            aliveSet.add(new Cell(pos[0], pos[1]));
+        for (Integer[] pos: init_tissue) {
+            if (pos != null) {
+                aliveSet.add(new Cell(pos[0] + tissue_offset, pos[1] + tissue_offset));
+                System.out.println(pos[0] + " " + pos[1]);
+            }
         }
 
-        t = new Timer(40, new Listener());	   // 0 delay between frames
+        t = new Timer(50, new Listener());	   // 0 delay between frames
         t.start(); 
     }
     
@@ -92,6 +103,7 @@ public class GridPanel extends JPanel {
             if (n == 2 || n == 3)
                 new_aliveSet.add(cell);
         }
+
         aliveSet = new_aliveSet;
         // dead cells with a frequency of exactly 3 become alive 
         Set<Cell> s = dead_neighbors_frequency.keySet();
@@ -102,15 +114,47 @@ public class GridPanel extends JPanel {
         dead_neighbors_frequency.clear();
     }
 
-    public int[][] random_seed() {
-        return null;
+    // pre: size of tissue and location offset
+    // post: return a random tissue structure (random cluster of cells)
+    public Integer[][] random_tissue(int size, int offset) {
+        Integer[][] random_tissue = new Integer[size][2]; 
+        for (int i = 0; i < size; i++) {
+            if (Math.random() > 0.5)
+                random_tissue[i] = new Integer[] {(int)(Math.random() * mutation_rate + offset), 
+                                                (int)(Math.random() * mutation_rate + offset)};
+            else
+                random_tissue[i] = null;
+        }
+        return random_tissue;
     } 
 
-    // public void initialize() {
-    //     for (int[] pos: seed) {
-    //         alive.add((ArrayList<Integer>) Arrays.asList(pos[0], pos[1]));
-    //     }
-    // }
+    // cross over reproduction
+    // pre: two tissues with equal dimentions
+    // post: swap second half of the tissues and return both in a 3d array
+    public Integer[][][] cross_over(Integer[][] tissue_1, Integer[][] tissue_2) {
+        
+        for (int i = (int)(tissue_1.length/2); i < tissue_1.length; i++) {
+            Integer[] temp = tissue_1[i];
+            tissue_1[i] = tissue_2[i];
+            tissue_2[i] = temp; 
+        } 
+        return new Integer[][][] {tissue_1, tissue_2};
+    }
+
+    public selection() {
+
+    }
+
+    // post: return the fitness of a pattern based on survival time and growth rate 
+    public int fitness() {
+        return 0;        
+    }
+
+    // pre: tissue
+    // post: return randomly modified version of original tissues
+    public Integer[][] mutate(Integer[][] tissue) {
+
+    }
     
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -123,21 +167,26 @@ public class GridPanel extends JPanel {
                 g.fillRect(cell.x*c_width, cell.y*c_height, c_width, c_height);
             }
         }
-    }
-
-    // post: return the fitness of a pattern based on survival time and growth rate 
-    public int fitness() {
-        return 0;        
+        g.drawString("Gen: " + generation_count, 10,10);
+        
+        
     }
 
     private class Listener implements ActionListener
     {
        public void actionPerformed(ActionEvent e)	//this is called for each timer iteration
        {
-          if(true) // TODO: Add a terminating case; MAX Fitness
+          if(aliveSet.size() != 0 && generation_count < 1000) // 
           {
             advance_generation();
             repaint();
+          }
+          else {
+            // Use CrossOver function to reproduce with highest fitness
+
+            // Use Mutate function 
+            
+            // reset 
           }
        }
     }
