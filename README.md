@@ -1,3 +1,3 @@
 # Cellular-automata
 
-Cellular Automata Engine
+Cellular Automata Simulation and Genetic Algorithm.
